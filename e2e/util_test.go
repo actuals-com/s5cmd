@@ -1100,8 +1100,16 @@ func isJSON(str string) bool {
 	return jsonpkg.Unmarshal([]byte(str), &js) == nil
 }
 
+func formatExpected(template string, args []interface{}) string {
+	if len(args) == 0 {
+		return template
+	}
+
+	return fmt.Sprintf(template, args...)
+}
+
 func equals(format string, args ...interface{}) compareFunc {
-	expected := fmt.Sprintf(format, args...)
+	expected := formatExpected(format, args)
 	return func(actual string) error {
 		if expected == actual {
 			return nil
@@ -1113,7 +1121,7 @@ func equals(format string, args ...interface{}) compareFunc {
 }
 
 func json(format string, args ...interface{}) compareFunc {
-	expected := fmt.Sprintf(format, args...)
+	expected := formatExpected(format, args)
 	// escape multiline characters
 	{
 		expected = strings.Replace(expected, "\n", "", -1)
@@ -1134,7 +1142,7 @@ func json(format string, args ...interface{}) compareFunc {
 }
 
 func prefix(format string, args ...interface{}) compareFunc {
-	expected := fmt.Sprintf(format, args...)
+	expected := formatExpected(format, args)
 	return func(actual string) error {
 		if strings.HasPrefix(actual, expected) {
 			return nil
@@ -1146,7 +1154,7 @@ func prefix(format string, args ...interface{}) compareFunc {
 }
 
 func suffix(format string, args ...interface{}) compareFunc {
-	expected := fmt.Sprintf(format, args...)
+	expected := formatExpected(format, args)
 	return func(actual string) error {
 		if strings.HasSuffix(actual, expected) {
 			return nil
@@ -1158,7 +1166,7 @@ func suffix(format string, args ...interface{}) compareFunc {
 }
 
 func contains(format string, args ...interface{}) compareFunc {
-	expected := fmt.Sprintf(format, args...)
+	expected := formatExpected(format, args)
 	return func(actual string) error {
 		if strings.Contains(actual, expected) {
 			return nil
