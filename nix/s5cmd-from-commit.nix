@@ -2,6 +2,7 @@
 , rev
 , srcHash
 , vendorHash
+, expectedBinarySha256 ? null
 , pname ? "s5cmd"
 , repoOwner ? "peak"
 , repoName ? "s5cmd"
@@ -30,6 +31,13 @@ pkgs.buildGoModule {
     "-X=github.com/peak/s5cmd/v2/version.Version=${version}"
     "-X=github.com/peak/s5cmd/v2/version.GitCommit=${rev}"
   ];
+
+  nativeBuildInputs = [ pkgs.coreutils ];
+
+  doInstallCheck = expectedBinarySha256 != null;
+  installCheckPhase = pkgs.lib.optionalString (expectedBinarySha256 != null) ''
+    echo "${expectedBinarySha256}  $out/bin/s5cmd" | sha256sum -c -
+  '';
 
   meta = with pkgs.lib; {
     description = "Very fast S3 and local filesystem execution tool";
