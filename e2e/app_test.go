@@ -174,6 +174,9 @@ func TestAppProxy(t *testing.T) {
 			}
 
 			os.Setenv("http_proxy", pxyURL)
+			os.Setenv("HTTP_PROXY", pxyURL)
+			defer os.Unsetenv("http_proxy")
+			defer os.Unsetenv("HTTP_PROXY")
 
 			_, s5cmd := setup(t, withProxy())
 

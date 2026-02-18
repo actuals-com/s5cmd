@@ -52,13 +52,17 @@ func (p *httpProxy) ServeHTTP(wr http.ResponseWriter, req *http.Request) {
 	client := &http.Client{
 		Transport: &http.Transport{Proxy: nil},
 	}
+	forwardReq := req.Clone(req.Context())
+	forwardURL := *req.URL
+	forwardReq.URL = &forwardURL
 	// http: Request.RequestURI can't be set in client requests.
 	// http://golang.org/src/pkg/net/http/client.go
-	req.RequestURI = ""
+	forwardReq.RequestURI = ""
+	forwardReq.Host = forwardReq.URL.Host
 
-	delHopHeaders(req.Header)
+	delHopHeaders(forwardReq.Header)
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(forwardReq)
 	if err != nil {
 		http.Error(wr, "Server Error", http.StatusInternalServerError)
 	}
