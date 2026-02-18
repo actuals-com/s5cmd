@@ -4,8 +4,9 @@
 , vendorHash
 , expectedBinarySha256 ? null
 , pname ? "s5cmd"
-, repoOwner ? "peak"
+, repoOwner ? "actuals"
 , repoName ? "s5cmd"
+, modulePath ? "github.com/peak/s5cmd/v2"
 , version ? rev
 }:
 
@@ -28,8 +29,8 @@ pkgs.buildGoModule {
   ldflags = [
     "-s"
     "-w"
-    "-X=github.com/peak/s5cmd/v2/version.Version=${version}"
-    "-X=github.com/peak/s5cmd/v2/version.GitCommit=${rev}"
+    "-X=${modulePath}/version.Version=${version}"
+    "-X=${modulePath}/version.GitCommit=${rev}"
   ];
 
   nativeBuildInputs = [ pkgs.coreutils ];

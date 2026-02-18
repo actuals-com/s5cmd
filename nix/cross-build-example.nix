@@ -4,7 +4,8 @@
 #     --argstr rev 16a2aad \
 #     --argstr srcHash sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA= \
 #     --argstr vendorHash sha256-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB= \
-#     --argstr target aarch64-unknown-linux-musl
+#     --argstr target aarch64-unknown-linux-musl \
+#     --argstr repoOwner actuals
 #
 # Tip: use fake hashes first (e.g. lib.fakeHash) and rerun to get the expected
 # values from Nix error output.
@@ -25,6 +26,7 @@
 , vendorHash
 , target ? "aarch64-unknown-linux-musl"
 , expectedBinarySha256 ? null
+, repoOwner ? "actuals"
 }:
 
 let
@@ -33,5 +35,5 @@ let
   };
 in
 pkgs.callPackage ./s5cmd-from-commit.nix {
-  inherit pkgs rev srcHash vendorHash expectedBinarySha256;
+  inherit pkgs rev srcHash vendorHash expectedBinarySha256 repoOwner;
 }
